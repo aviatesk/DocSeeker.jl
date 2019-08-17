@@ -20,15 +20,12 @@ function _createdocsdb()
 
     pkgs = keys(installed())
 
-    if isdefined(Main, :Juno)
-      @eval import Juno
-      Juno.isactive() && begin
-        Juno.progress() do id
-          for (i, pkg) in enumerate(pkgs)
-            @info "caching documentations of $(pkg) ..." progress = i / length(pkgs) _id = id
-            process = @spawn _createdocsdb(pkg)
-            wait(process)
-          end
+    if isdefined(Main, :Juno) && Main.Juno.isactive()
+      Main.Juno.progress() do id
+        for (i, pkg) in enumerate(pkgs)
+          @info "caching documentations of $(pkg) ..." progress = i / length(pkgs) _id = id
+          process = @spawn _createdocsdb(pkg)
+          wait(process)
         end
       end
     else
